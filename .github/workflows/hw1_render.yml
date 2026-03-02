@@ -1,0 +1,32 @@
+name: render
+
+on:
+  push:
+    paths:
+      - content.md
+      - assets/**
+      - tools/**
+      - render.sh
+      - .github/workflows/render.yml
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-xetex texlive-lang-chinese fonts-noto-cjk
+
+      - name: Render
+        run: |
+          bash render.sh
+
+      - name: Upload outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: output
+          path: output/
